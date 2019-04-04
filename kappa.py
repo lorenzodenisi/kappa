@@ -78,16 +78,23 @@ while True:
 
     if dir != -1:
 
+        moved = False
+
         if dir == curses.KEY_DOWN:
             for j in range(4):  # cols
                 for i in range(3, -1, -1):  # rows
                     if nums[i][j] != 0:
                         n = nums[i][j]
+                        startpos = i
                         nums[i][j] = 0
                         while True:
                             i += 1
                             if i >= 4:  # hit the wall
                                 nums[i - 1][j] = n
+
+                                if startpos != i+1:
+                                    moved = True
+
                                 break
                             else:
                                 if nums[i][j] != 0:  # find another char
@@ -95,6 +102,10 @@ while True:
                                         nums[i][j] = n + 1
                                     else:  # otherwise stack
                                         nums[i - 1][j] = n
+
+                                        if startpos != i + 1:
+                                            moved = True
+
                                     break
 
         if dir == curses.KEY_UP:
@@ -102,11 +113,15 @@ while True:
                 for i in range(4):  # rows
                     if nums[i][j] != 0:
                         n = nums[i][j]
+                        startpos = i
                         nums[i][j] = 0
                         while True:
                             i -= 1
                             if i < 0:  # hit the wall
                                 nums[i + 1][j] = n
+
+                                if startpos != i-1:
+                                    moved = True
                                 break
                             else:
                                 if nums[i][j] != 0:  # find another char
@@ -114,6 +129,8 @@ while True:
                                         nums[i][j] = n + 1
                                     else:  # otherwise stack
                                         nums[i + 1][j] = n
+                                        if startpos != i-1:
+                                            moved = True
                                     break
 
         if dir == curses.KEY_LEFT:
@@ -121,11 +138,16 @@ while True:
                 for j in range(4):  # cols
                     if nums[i][j] != 0:
                         n = nums[i][j]
+                        startpos = j
                         nums[i][j] = 0
                         while True:
                             j -= 1
                             if j < 0:  # hit the wall
                                 nums[i][j + 1] = n
+
+                                if startpos != j+1:
+                                    moved = True
+
                                 break
                             else:
                                 if nums[i][j] != 0:  # find another char
@@ -133,6 +155,10 @@ while True:
                                         nums[i][j] = n + 1
                                     else:  # otherwise stack
                                         nums[i][j + 1] = n
+
+                                        if startpos != j + 1:
+                                            moved = True
+
                                     break
 
         if dir == curses.KEY_RIGHT:
@@ -140,11 +166,16 @@ while True:
                 for j in range(3, -1, -1):  # cols
                     if nums[i][j] != 0:
                         n = nums[i][j]
+                        startpos = j
                         nums[i][j] = 0
                         while True:
                             j += 1
                             if j >= 4:  # hit the wall
                                 nums[i][j - 1] = n
+
+                                if startpos != j-1:
+                                    moved = True
+
                                 break
                             else:
                                 if nums[i][j] != 0:  # find another char
@@ -152,9 +183,13 @@ while True:
                                         nums[i][j] = n + 1
                                     else:  # otherwise stack
                                         nums[i][j - 1] = n
+
+                                        if startpos != j - 1:
+                                            moved = True
+
                                     break
 
-        if dir == curses.KEY_DOWN or dir == curses.KEY_UP or dir == curses.KEY_LEFT or dir == curses.KEY_RIGHT:
+        if moved and (dir == curses.KEY_DOWN or dir == curses.KEY_UP or dir == curses.KEY_LEFT or dir == curses.KEY_RIGHT):
             newnum = [random.randint(0, 3), random.randint(0, 3)]
 
             while nums[newnum[0]][newnum[1]] != 0:
